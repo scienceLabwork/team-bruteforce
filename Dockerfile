@@ -11,9 +11,8 @@ COPY . .
 RUN apt-get -y update
 RUN apt-get update && apt-get install -y python3 python3-pip
 RUN pip3 install -r requirements.txt
-RUN /usr/local/bin/python -m pip install --upgrade pip
 
 #Expose the required port
-EXPOSE 5000
+# EXPOSE 5000
 ENTRYPOINT ["python"]
 CMD ["app.py"]

@@ -2,25 +2,13 @@ from flask import Flask, render_template, request, redirect
 import time
 import mysql.connector
 import os
+import sqlite3
 
 app = Flask(__name__,static_url_path='', static_folder='frontend/static',template_folder='frontend/templates')
-port = int(os.environ.get("PORT", 5000))
+# port = int(os.environ.get("PORT", 5000))
 
-class auth:
-    HOST = "sql6.freemysqlhosting.net"
-    USER = "sql6525576"
-    DATABASE = "sql6525576"
-    PASSWORD = "zPPTKm2WGB"
-    PORT = "3306"
-
-con = mysql.connector.connect(
-    host=auth.HOST,
-    user=auth.USER,
-    database=auth.DATABASE,
-    password=auth.PASSWORD,
-    port=auth.PORT
-)
-
+#open sqlite database
+con = sqlite3.connect('database.db',check_same_thread=False)
 cursor = con.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name TEXT, email TEXT, message TEXT,stars TEXT, created_at TEXT)")
 con.commit()
@@ -38,7 +26,7 @@ def review():
         message = request.form.get('Nmessage')
         print(name, email, message)
         cursor = con.cursor()
-        cursor.execute("INSERT INTO users (name, email, message, created_at) VALUES (%s, %s, %s, %s)", (name, email, message, time.strftime("%Y-%m-%d %H:%M:%S")))
+        cursor.execute("INSERT INTO users (name, email, message, created_at) VALUES ('{}', '{}', '{}', '{}')".format(str(name), str(email), str(message), time.strftime("%Y-%m-%d %H:%M:%S")))
         con.commit()
         return redirect('/submitForm')
     return render_template('review.html')
@@ -52,4 +40,4 @@ def page_not_found(e):
     return render_template('error.html'), 404
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', debug=True)
